@@ -5,10 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/*
- * This class is used to store data of every staff member whom status is Available, as Nurse and Doctor classes stores data of every
- * staff member included by user but only those staff members will be stored in these list separately who are available for work.
- * */
 
 
 public class AvailableStaff implements Serializable {
