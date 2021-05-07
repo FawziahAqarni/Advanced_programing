@@ -2,12 +2,6 @@ package location;
 
 import java.io.Serializable;
 
-/*
- * This class is created to store the details of allocation of each staff member i.e. Doctor and Nurse
- * to ward and further to rooms as per the requirements given in Milestone-1
- * 
- * 
- * */
 
 
 public class Location implements Serializable {
