@@ -22,12 +22,6 @@ import staff.Doctor;
 import staff.Nurse;
 
 
-/*
- * CareHome class is basically the main Driver class of all functionalities, It uses all the elements of the system
- * to provide desired features of Milestone-1, as it takes new entries for Staff members with all the constraints
- * defined in the requirements and also stores information related to allocation of each member and 
- * separating all members into separate lists based on their availability
- * */
 
 
 public class CareHome implements Serializable {
@@ -107,8 +101,6 @@ public class CareHome implements Serializable {
 	}
 
 
-	//This is the main function called initially to show simple menu to user and upon selection calls the 
-//function to perform functionality
 	private void menuFunction() {
 		boolean flag = true;
 		int choice;
@@ -427,9 +419,6 @@ public class CareHome implements Serializable {
 	}
 
 	
-	
-//This function is called when user choose to add new nurse in the system 
-//and this function is called from menuFunction upon selection of case1
 	private void addNurseInfo() {
 		Location locTemp = new Location();
 		Nurse temp = new Nurse();
@@ -475,8 +464,6 @@ public class CareHome implements Serializable {
 		displayNurseData(temp);
 	}
 
-//This function is helper function of above defined addNurseInfo() which checks whether the shift allocation
-//is per the rules defined in requirements or not
 	public boolean checkCompliance(int shiftStart, int shiftEnd) {
 		if(shiftStart == 8) {
 			if (shiftEnd == 4) {
@@ -501,7 +488,6 @@ public class CareHome implements Serializable {
 		return false;
 	}
 
-//this function is to diplay the nurse info
 	private void displayNurseData(Nurse temp) {
 		System.out.println("\nID: "+temp.getId()+"\nName: "+temp.getName()
 						+ "\nShift Time: "+temp.getShiftTiming()
@@ -510,8 +496,7 @@ public class CareHome implements Serializable {
 						+"\nRoom: "+temp.getLocationAssignedTo().getRoom()+"\n\n");
 	}
 	
-//this function is to add new doctor information in the system, it is called from menuFunction
-//by choosing case2
+
 	private void addDoctorInfo() {
 		Location locTemp = new Location();
 		Doctor temp = new Doctor();
@@ -544,7 +529,6 @@ public class CareHome implements Serializable {
 	}
 
 
-//this function displays the doctor info
 	private void displayDoctorData(Doctor temp) {
 		System.out.println("\nID: "+temp.getId()+"\nName: "+temp.getName()
 						+ "\nShift Start Time i.e. 1-Hour Shift: "+temp.getShiftTiming()
@@ -554,9 +538,6 @@ public class CareHome implements Serializable {
 		
 	}
 
-//As per the requirements we need to also keep record of all available doctors and nurses in separate lists,
-//so whenever new staff is added into the system, its status is checked whether it is available or not, and if available added
-//into these two lists maintaining the staff separately
 	private void availableMedicalStaff() {
 		System.out.println("\nAvailable Doctors are");
 		
@@ -614,9 +595,7 @@ public class CareHome implements Serializable {
 		this.availableStaff = availableStaff;
 	}
 
-//this the main function which initially creates an object, display menu of program and when user adds data and closes the program,
-//it serializes the objects in file, and when executed again it reloads all the objects states making all
-//the data and states availble to be used again
+
 	public static void main(String[] args) {
 		CareHome careHomeObjectSerializable = null;
 		CareHome careHomeObject = new CareHome();
