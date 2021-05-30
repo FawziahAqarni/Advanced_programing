@@ -46,6 +46,7 @@ public class Bed implements Serializable{
 	public int getBedID() {
 		return bedID;
 	}
+	
 	/**
 	 * @param bedID the bedID to set
 	 */
