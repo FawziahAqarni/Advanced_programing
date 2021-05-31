@@ -1,5 +1,6 @@
 package logs;
 
+
 import java.io.Serializable;
 
 public class ActionLog implements Serializable {
