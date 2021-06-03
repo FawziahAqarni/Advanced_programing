@@ -24,6 +24,7 @@ import staff.Nurse;
 
 
 
+
 public class CareHome implements Serializable {
 	/**
 	 * 
