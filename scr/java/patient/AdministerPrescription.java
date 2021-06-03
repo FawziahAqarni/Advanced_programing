@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class AdministerPrescription implements Serializable {
 	private static final long serialVersionUID = 1L;
 	List<Patient> administerPatientPrescriptions = new ArrayList<Patient>();
