@@ -5,7 +5,7 @@ import java.io.Serializable;
 import location.Location;
 
 
-public class Doctor implements Serializable {
+public class Nurse implements Serializable {
 	/**
 	 * 
 	 */
@@ -14,13 +14,15 @@ public class Doctor implements Serializable {
 	String name;
 	String shiftTiming;
 	String status;
+	int shiftStart;
+	int shiftEnd;
 	Location locationAssignedTo;
 	
-	
-	public Doctor() {
+	public Nurse() {
 		super();
 	}
 	
+		
 	
 	/**
 	 * @param id
@@ -28,17 +30,15 @@ public class Doctor implements Serializable {
 	 * @param status
 	 * @param shiftStart
 	 * @param shiftEnd
-	 * @param locationAssignedTo
 	 */
-	public Doctor(int id, String name, String status, Location locationAssignedTo) {
+	public Nurse(int id, String name, String status, int shiftStart, int shiftEnd) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.status = status;
-		this.locationAssignedTo = locationAssignedTo;
+		this.shiftStart = shiftStart;
+		this.shiftEnd = shiftEnd;
 	}
-
-
 
 
 	/**
@@ -50,35 +50,12 @@ public class Doctor implements Serializable {
 
 
 
-
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
-
-
-	/**
-	 * @return the locationAssignedTo
-	 */
-	public Location getLocationAssignedTo() {
-		return locationAssignedTo;
-	}
-
-
-
-
-	/**
-	 * @param locationAssignedTo the locationAssignedTo to set
-	 */
-	public void setLocationAssignedTo(Location locationAssignedTo) {
-		this.locationAssignedTo = locationAssignedTo;
-	}
-
-
 
 
 	/**
@@ -88,14 +65,12 @@ public class Doctor implements Serializable {
 		return name;
 	}
 	
-	
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 	
 	/**
 	 * @return the shiftTiming
@@ -104,14 +79,12 @@ public class Doctor implements Serializable {
 		return shiftTiming;
 	}
 	
-	
 	/**
 	 * @param shiftTiming the shiftTiming to set
 	 */
 	public void setShiftTiming(String shiftTiming) {
 		this.shiftTiming = shiftTiming;
 	}
-	
 	
 	
 	/**
@@ -129,5 +102,54 @@ public class Doctor implements Serializable {
 		this.status = status;
 	}
 	
+	
+	/**
+	 * @return the shiftStart
+	 */
+	public int getShiftStart() {
+		return shiftStart;
+	}
+	
+	/**
+	 * @param shiftStart the shiftStart to set
+	 */
+	public void setShiftStart(int shiftStart) {
+		this.shiftStart = shiftStart;
+	}
+	
+	/**
+	 * @return the shiftEnd
+	 */
+	public int getShiftEnd() {
+		return shiftEnd;
+	}
+	
+	/**
+	 * @param shiftEnd the shiftEnd to set
+	 */
+	public void setShiftEnd(int shiftEnd) {
+		this.shiftEnd = shiftEnd;
+	}
 
+
+
+	/**
+	 * @return the locationAssignedTo
+	 */
+	public Location getLocationAssignedTo() {
+		return locationAssignedTo;
+	}
+
+
+
+	/**
+	 * @param locationAssignedTo the locationAssignedTo to set
+	 */
+	public void setLocationAssignedTo(Location locationAssignedTo) {
+		this.locationAssignedTo = locationAssignedTo;
+	}
+
+
+
+	
 }
