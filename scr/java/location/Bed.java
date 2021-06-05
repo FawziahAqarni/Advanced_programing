@@ -6,11 +6,12 @@ import patient.Patient;
 
 public class Bed implements Serializable{
 	private static final long serialVersionUID = 1L;
-	boolean vacant;
-	Patient patientAssigned;
-	int bedID;
+	boolean vacant; 
+	Patient patientAssigned; 
+	int bedID; 
+	
 	/**
-	 * 
+	 * Constructor to set status and id of bed
 	 */
 	public Bed(int bID) {
 		vacant = true;
@@ -46,7 +47,6 @@ public class Bed implements Serializable{
 	public int getBedID() {
 		return bedID;
 	}
-	
 	/**
 	 * @param bedID the bedID to set
 	 */
