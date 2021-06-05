@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,7 +30,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JOptionPane;
 
-
 public class CareHome implements Serializable {
 	/**
 	 * 
@@ -38,17 +38,18 @@ public class CareHome implements Serializable {
 	transient Scanner sc;
 	List<Nurse> nursesData;
 	List<Doctor> doctorsData;
+	List<Patient> patientsData;
 	AvailableStaff availableStaff;
 	Ward ward[];
 	AdministerPrescription AP;
 	List<ActionLog> logs;
 
-	
 	public CareHome() {
 		super();
 		nursesData = new ArrayList<Nurse>();
 		doctorsData = new ArrayList<Doctor>();
 		availableStaff = new AvailableStaff();
+		patientsData = new ArrayList<Patient>();
 		AP = new AdministerPrescription();
 		logs = new ArrayList<ActionLog>();
 		ward = new Ward[2];
@@ -98,7 +99,6 @@ public class CareHome implements Serializable {
 	public void setLogs(List<ActionLog> logs) {
 		this.logs = logs;
 	}
-
 
 	public void menuFunction() {
 		boolean flag = true;
@@ -171,10 +171,10 @@ public class CareHome implements Serializable {
 	public void displayLogs() {
 		String temp = "";
 		for (int i = 0; i < logs.size(); i++) {
-			temp+= "Staff-ID: " + logs.get(i).getStaffID() + "\tDay:" + logs.get(i).getDay() + "\tTime:"
+			temp += "Staff-ID:    " + logs.get(i).getStaffID() + "   \tDay:" + logs.get(i).getDay() + "   \tTime:"
 					+ logs.get(i).getTime() + "\nAction-Performed: " + logs.get(i).getActionPerformed() + "\n";
-			System.out.println("Staff-ID: " + logs.get(i).getStaffID() + "\tDay:" + logs.get(i).getDay() + "\tTime:"
-					+ logs.get(i).getTime() + "\nAction-Performed: " + logs.get(i).getActionPerformed());
+			System.out.println("Staff-ID:    " + logs.get(i).getStaffID() + "   \tDay:  " + logs.get(i).getDay()
+					+ "   \tTime:" + logs.get(i).getTime() + "\nAction-Performed: " + logs.get(i).getActionPerformed());
 		}
 		JOptionPane.showMessageDialog(null, temp, "DisplayLogs", 1);
 	}
@@ -190,10 +190,11 @@ public class CareHome implements Serializable {
 			prescription = tmppat.getPrescription();
 			for (int i = 0; i < prescription.size(); i++) {
 				tmp = prescription.get(i);
-				temp2 += "Patient-ID: " + tmppat.getPatientID() + "\tMedicine:" + tmp.getMedicine()
-				+ "\tTime:" + tmp.getTime() + "\tDose:" + tmp.getDose() + "\tStaff-ID:" + tmp.getStaffID() + "\n";
-				System.out.println("Patient-ID: " + tmppat.getPatientID() + "\tMedicine:" + tmp.getMedicine()
-						+ "\tTime:" + tmp.getTime() + "\tDose:" + tmp.getDose() + "\tStaff-ID:" + tmp.getStaffID());
+				temp2 += "Patient-ID:" + tmppat.getPatientID() + "   \tMedicine:" + tmp.getMedicine() + "    \tTime:"
+						+ tmp.getTime() + "  \tDose:" + tmp.getDose() + "   \tStaff-ID:" + tmp.getStaffID() + "\n";
+				System.out.println("Patient-ID: " + tmppat.getPatientID() + "     \tMedicine:" + tmp.getMedicine()
+						+ "    \tTime:" + tmp.getTime() + "    \tDose:" + tmp.getDose() + "     \tStaff-ID:"
+						+ tmp.getStaffID());
 			}
 		}
 		JOptionPane.showMessageDialog(null, temp2, "DisplayAdministerPrescription", 1);
@@ -201,463 +202,629 @@ public class CareHome implements Serializable {
 
 //This function is to Administer Prescription to patients and storing it in the AdministerPrescription class object AP abnd finally logs the action with details
 	public void administerPrescription() {
-		
+
 		JFrame adinfo = new JFrame("Administer a Prescription");
 		adinfo.setBounds(450, 50, 500, 650);
-		adinfo.setTitle("Administer a Prescription");         
-       
-        JLabel award=new JLabel("Ward ID:");
-        award.setBounds(20, 30, 130, 30);
-        JTextField award_text = new JTextField ();
-        award_text.setBounds(170, 30, 270, 30);
-        
-        JLabel rward=new JLabel("Room Number:");
-        rward.setBounds(20, 90, 130, 30);
-        JTextField rward_text = new JTextField ();
-        rward_text.setBounds(170, 90, 270, 30);
+		adinfo.setTitle("Administer a Prescription");
 
-        JLabel broom=new JLabel("Bed Number:");
-        broom.setBounds(20, 150, 130, 30);
-        JTextField broom_text = new JTextField ();
-        broom_text.setBounds(170, 150, 270, 30);   
-        
-        JLabel id=new JLabel("Patient ID:");
-        id.setBounds(20, 210, 130, 30);
-        JTextField id_text = new JTextField ();
-        id_text.setBounds(170, 210, 270, 30);
-        
-        JLabel time=new JLabel("Time :");
-        time.setBounds(20, 270, 130, 30);
-        JTextField time_text = new JTextField ();
-        time_text.setBounds(170, 270, 270, 30);
-		
-        JLabel medicine=new JLabel("Medicine :");
-        medicine.setBounds(20, 330, 130, 30);
-        JTextField medicine_text = new JTextField ();
-        medicine_text.setBounds(170, 330, 270, 30);
-        
-        
-        JLabel dose=new JLabel("Dose :");
-        dose.setBounds(20, 390, 130, 30);
-        JTextField dose_text = new JTextField ();
-        dose_text.setBounds(170, 390, 270, 30);
-        
-		JLabel sid=new JLabel("Stuff-ID:");
-        sid.setBounds(20, 450, 130, 30);
-        JTextField sid_text = new JTextField ();
-        sid_text.setBounds(170, 450, 270, 30);
+		JLabel award = new JLabel("Ward ID:");
+		award.setBounds(20, 30, 130, 30);
+		JTextField award_text = new JTextField();
+		award_text.setBounds(170, 30, 270, 30);
 
-        
-        JButton OK_butt = new JButton("OK");
+		JLabel rward = new JLabel("Room Number:");
+		rward.setBounds(20, 90, 130, 30);
+		JTextField rward_text = new JTextField();
+		rward_text.setBounds(170, 90, 270, 30);
+
+		JLabel broom = new JLabel("Bed Number:");
+		broom.setBounds(20, 150, 130, 30);
+		JTextField broom_text = new JTextField();
+		broom_text.setBounds(170, 150, 270, 30);
+
+		JLabel id = new JLabel("Patient ID:");
+		id.setBounds(20, 210, 130, 30);
+		JTextField id_text = new JTextField();
+		id_text.setBounds(170, 210, 270, 30);
+
+		JLabel time = new JLabel("Time :");
+		time.setBounds(20, 270, 130, 30);
+		JTextField time_text = new JTextField();
+		time_text.setBounds(170, 270, 270, 30);
+
+		JLabel medicine = new JLabel("Medicine :");
+		medicine.setBounds(20, 330, 130, 30);
+		JTextField medicine_text = new JTextField();
+		medicine_text.setBounds(170, 330, 270, 30);
+
+		JLabel dose = new JLabel("Dose :");
+		dose.setBounds(20, 390, 130, 30);
+		JTextField dose_text = new JTextField();
+		dose_text.setBounds(170, 390, 270, 30);
+
+		JLabel sid = new JLabel("Stuff-ID:");
+		sid.setBounds(20, 450, 130, 30);
+		JTextField sid_text = new JTextField();
+		sid_text.setBounds(170, 450, 270, 30);
+
+		JButton OK_butt = new JButton("OK");
 		OK_butt.setBounds(150, 550, 200, 40);
-		OK_butt.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent e) {
-		    	
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
 				availableBeds();
 				int w, r, b;
-				w = Integer.parseInt(award_text.getText());
-				r = Integer.parseInt(rward_text.getText());
-				b = Integer.parseInt(broom_text.getText());
+				try {
+					w = Integer.parseInt(award_text.getText());
+					r = Integer.parseInt(rward_text.getText());
+					b = Integer.parseInt(broom_text.getText());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(adinfo, "Please Enter all the values", "ERROR", 1);
+					return;
+				}
+				if (w > ward.length || w < 1) {
+					JOptionPane.showMessageDialog(adinfo, "Ward Number Should be Between 1-" + ward.length, "ERROR", 1);
+					return;
+				}
+				if (r > ward[w - 1].getRoom().length || r < 1) {
+					JOptionPane.showMessageDialog(adinfo,
+							"Room Number Should be Between 1-" + ward[w - 1].getRoom().length, "ERROR", 1);
+					return;
+				}
+				if (b > ward[w - 1].getRoom(r - 1).getBed().length || b < 1) {
+					JOptionPane.showMessageDialog(adinfo,
+							"Bed Number Should be Between 1-" + ward[w - 1].getRoom(r - 1).getBed().length, "ERROR", 1);
+					return;
+				}
+
 				if (ward[w - 1].getRoom(r - 1).getBed(b - 1).isVacant()) {
 					JOptionPane.showMessageDialog(null, "No Resident assigned to this Bed", "ERROR", 1);
-					
+
 				} else {
-					JOptionPane.showMessageDialog(null, " Patient ID is: " + ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned().getPatientID(),"" , 1);
+					JOptionPane.showMessageDialog(null,
+							" Patient ID is: "
+									+ ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned().getPatientID(),
+							"", 1);
 					List<Prescription> prescription = ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned()
 							.getPrescription();
 					Prescription tmp;
 					String temp2 = "";
 					for (int i = 0; i < prescription.size(); i++) {
 						tmp = prescription.get(i);
-						temp2 += "Medicine:" + tmp.getMedicine() + "\tTime:" + tmp.getTime() + "\tDose:"
-								+ tmp.getDose() + "\tStaff-ID:" + tmp.getStaffID() + "\n";
+						temp2 += "Medicine:" + tmp.getMedicine() + "\tTime:" + tmp.getTime() + "\tDose:" + tmp.getDose()
+								+ "\tStaff-ID:" + tmp.getStaffID() + "\n";
 					}
-					JOptionPane.showMessageDialog(null, temp2,"" , 1);
-			
+					JOptionPane.showMessageDialog(null, temp2, "", 1);
+
 					Patient tmpP = new Patient();
 					Prescription tmp1 = new Prescription();
-					
+
 					tmpP.setPatientID(Integer.parseInt(id_text.getText()));
 					tmp1.setMedicine(medicine_text.getText());
-					
+
 					tmp1.setTime(time_text.getText());
-					
+
 					tmp1.setDose(dose_text.getText());
 					System.out.println("Enter Staff-ID: ");
 					tmp1.setStaffID(Integer.parseInt(sid_text.getText()));
 					tmpP.getPrescription().add(tmp1);
 					AP.getAdministerPatientPrescriptions().add(tmpP);
 					ActionLog tempLog = new ActionLog();
-		
+
 				}
-		    	
-		    }
+
+			}
 		});
-		
-		adinfo.add(id);        adinfo.add(id_text);
-		adinfo.add(medicine);        adinfo.add(medicine_text);
-		adinfo.add(award);        adinfo.add(award_text);
-		adinfo.add(rward);        adinfo.add(rward_text);
-		adinfo.add(broom);        adinfo.add(broom_text);
-		adinfo.add(sid);        adinfo.add(sid_text);
-		adinfo.add(dose);		adinfo.add(dose_text);
-		adinfo.add(time);        adinfo.add(time_text);
+
+		adinfo.add(id);
+		adinfo.add(id_text);
+		adinfo.add(medicine);
+		adinfo.add(medicine_text);
+		adinfo.add(award);
+		adinfo.add(award_text);
+		adinfo.add(rward);
+		adinfo.add(rward_text);
+		adinfo.add(broom);
+		adinfo.add(broom_text);
+		adinfo.add(sid);
+		adinfo.add(sid_text);
+		adinfo.add(dose);
+		adinfo.add(dose_text);
+		adinfo.add(time);
+		adinfo.add(time_text);
 		adinfo.add(OK_butt);
-		adinfo.setLayout(null);  
+		adinfo.setLayout(null);
 		adinfo.setVisible(true);
-        
+
 //	
 
 	}
 
-//This function is to move the patient from one bed to another bed, finally logs the action
 	public void moveResidentBed() {
 		JFrame movebed = new JFrame("moveResidentBed");
 		movebed.setBounds(450, 50, 500, 690);
-		movebed.setTitle("MoveResidentBed");         
-       
-        JLabel award=new JLabel("From Ward ID:");
-        award.setBounds(20, 30, 130, 30);
-        JTextField award_text = new JTextField ();
-        award_text.setBounds(170, 30, 270, 30);
-        
-        JLabel rward=new JLabel("From Room Number :");
-        rward.setBounds(20, 90, 130, 30);
-        JTextField rward_text = new JTextField ();
-        rward_text.setBounds(170, 90, 270, 30);
+		movebed.setTitle("MoveResidentBed");
 
-        JLabel broom=new JLabel("From Bed Number:");
-        broom.setBounds(20, 150, 130, 30);
-        JTextField broom_text = new JTextField ();
-        broom_text.setBounds(170, 150, 270, 30);   
-        
-        JLabel award2=new JLabel("To Ward ID:");
-        award2.setBounds(20, 240, 130, 30);
-        JTextField award2_text = new JTextField ();
-        award2_text.setBounds(170, 240, 270, 30);
-        
-        JLabel rward2=new JLabel("To Room Number:");
-        rward2.setBounds(20, 300, 130, 30);
-        JTextField rward2_text = new JTextField ();
-        rward2_text.setBounds(170, 300, 270, 30);
+		JLabel award = new JLabel("From Ward ID:");
+		award.setBounds(20, 30, 130, 30);
+		JTextField award_text = new JTextField();
+		award_text.setBounds(170, 30, 270, 30);
 
-        JLabel broom2=new JLabel("To Bed Number:");
-        broom2.setBounds(20, 360, 130, 30);
-        JTextField broom2_text = new JTextField ();
-        broom2_text.setBounds(170, 360, 270, 30);   
-        
-        JLabel sid=new JLabel("Staff ID:");
-        sid.setBounds(20, 420, 130, 30);
-        JTextField sid_text = new JTextField ();
-        sid_text.setBounds(170, 420, 270, 30);
-        
-        JLabel day=new JLabel("Day:");
-        day.setBounds(20, 480, 130, 30);
-        JTextField day_text = new JTextField ();
-        day_text.setBounds(170, 480, 270, 30);
+		JLabel rward = new JLabel("From Room Number :");
+		rward.setBounds(20, 90, 130, 30);
+		JTextField rward_text = new JTextField();
+		rward_text.setBounds(170, 90, 270, 30);
 
-        JLabel time=new JLabel("Time:");
-        time.setBounds(20, 540, 130, 30);
-        JTextField time_text = new JTextField ();
-        time_text.setBounds(170, 560, 270, 30);   
-        
-        
-        JButton OK_butt = new JButton("OK");
+		JLabel broom = new JLabel("From Bed Number:");
+		broom.setBounds(20, 150, 130, 30);
+		JTextField broom_text = new JTextField();
+		broom_text.setBounds(170, 150, 270, 30);
+
+		JLabel award2 = new JLabel("To Ward ID:");
+		award2.setBounds(20, 240, 130, 30);
+		JTextField award2_text = new JTextField();
+		award2_text.setBounds(170, 240, 270, 30);
+
+		JLabel rward2 = new JLabel("To Room Number:");
+		rward2.setBounds(20, 300, 130, 30);
+		JTextField rward2_text = new JTextField();
+		rward2_text.setBounds(170, 300, 270, 30);
+
+		JLabel broom2 = new JLabel("To Bed Number:");
+		broom2.setBounds(20, 360, 130, 30);
+		JTextField broom2_text = new JTextField();
+		broom2_text.setBounds(170, 360, 270, 30);
+
+		JLabel sid = new JLabel("Staff ID:");
+		sid.setBounds(20, 420, 130, 30);
+		JTextField sid_text = new JTextField();
+		sid_text.setBounds(170, 420, 270, 30);
+
+		JLabel day = new JLabel("Day:");
+		day.setBounds(20, 480, 130, 30);
+		JTextField day_text = new JTextField();
+		day_text.setBounds(170, 480, 270, 30);
+
+		JLabel time = new JLabel("Time:");
+		time.setBounds(20, 540, 130, 30);
+		JTextField time_text = new JTextField();
+		time_text.setBounds(170, 560, 270, 30);
+
+		JButton OK_butt = new JButton("OK");
 		OK_butt.setBounds(150, 610, 200, 40);
-		OK_butt.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent e) {
-		    	
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		    	availableBeds();
-		    	int sw, sr, sb, dw, dr, db;
-				sw = Integer.parseInt(award_text.getText());
-				sr = Integer.parseInt(rward_text.getText());
-				sb = Integer.parseInt(broom_text.getText());
+				availableBeds();
+				int sw, sr, sb, dw, dr, db;
+				try {
+
+					sw = Integer.parseInt(award_text.getText());
+					sr = Integer.parseInt(rward_text.getText());
+					sb = Integer.parseInt(broom_text.getText());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(movebed, "Please Enter all the values", "ERROR", 1);
+					return;
+				}
+				if (sw > ward.length || sw < 1) {
+					JOptionPane.showMessageDialog(movebed, "Ward Number Should be Between 1-" + ward.length, "ERROR",
+							1);
+					return;
+				}
+				if (sr > ward[sw - 1].getRoom().length || sr < 1) {
+					JOptionPane.showMessageDialog(movebed,
+							"Room Number Should be Between 1-" + ward[sw - 1].getRoom().length, "ERROR", 1);
+					return;
+				}
+				if (sb > ward[sw - 1].getRoom(sr - 1).getBed().length || sb < 1) {
+					JOptionPane.showMessageDialog(movebed,
+							"Bed Number Should be Between 1-" + ward[sw - 1].getRoom(sr - 1).getBed().length, "ERROR",
+							1);
+					return;
+				}
 				if (ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).isVacant()) {
 					JOptionPane.showMessageDialog(null, "No Resident assigned to this Bed", "ERROR", 1);
 				} else {
-						
-						System.out.println(
-								"Please Look through above Ward, Room, and Bed details and Choose the Bed to move the Resident to:\nEnter Ward ID: ");
-						dw = Integer.parseInt(award_text.getText());
-						dr = Integer.parseInt(rward_text.getText());
-						db = Integer.parseInt(broom_text.getText());
-						
-						if (ward[dw - 1].getRoom(dr - 1).getBed(db - 1).isVacant()) {
-							ward[dw - 1].getRoom(dr - 1).getBed(db - 1)
-									.setPatientAssigned(ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).getPatientAssigned());
-							ward[dw - 1].getRoom(dr - 1).getBed(db - 1).setVacant(false);
-							JOptionPane.showMessageDialog(null, "Bed moved successfully", "Success", 1);
-							
-							ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).setPatientAssigned(null);
-							ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).setVacant(true);
-							ActionLog tempLog = new ActionLog();
-							tempLog.setStaffID(Integer.parseInt(sid_text.getText()));
-							
-							tempLog.setDay(day_text.getText());
-							System.out.println("Enter Time:");
-							tempLog.setTime(time_text.getText());
-							tempLog.setActionPerformed("Staff member moved the patient bed");
-							JOptionPane.showMessageDialog(null, "Staff member moved the patient bed", "Success", 1);
-							//logs.add(tempLog);
-						} else {
-							JOptionPane.showMessageDialog(null, "Resident already assigned to this Bed, Bed should be empty to put a new Resident", "ERROR", 1);
-							
-						}
-				
+
+					System.out.println(
+							"Please Look through above Ward, Room, and Bed details and Choose the Bed to move the Resident to:\nEnter Ward ID: ");
+					dw = Integer.parseInt(award_text.getText());
+					dr = Integer.parseInt(rward_text.getText());
+					db = Integer.parseInt(broom_text.getText());
+
+					if (ward[dw - 1].getRoom(dr - 1).getBed(db - 1).isVacant()) {
+						ward[dw - 1].getRoom(dr - 1).getBed(db - 1)
+								.setPatientAssigned(ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).getPatientAssigned());
+						ward[dw - 1].getRoom(dr - 1).getBed(db - 1).setVacant(false);
+						JOptionPane.showMessageDialog(null, "Bed moved successfully", "Success", 1);
+
+						ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).setPatientAssigned(null);
+						ward[sw - 1].getRoom(sr - 1).getBed(sb - 1).setVacant(true);
+						ActionLog tempLog = new ActionLog();
+						tempLog.setStaffID(Integer.parseInt(sid_text.getText()));
+
+						tempLog.setDay(day_text.getText());
+						System.out.println("Enter Time:");
+						tempLog.setTime(time_text.getText());
+						tempLog.setActionPerformed("Staff member moved the patient bed");
+						JOptionPane.showMessageDialog(null, "Staff member moved the patient bed", "Success", 1);
+						// logs.add(tempLog);
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"Resident already assigned to this Bed, Bed should be empty to put a new Resident",
+								"ERROR", 1);
+
+					}
+
 				}
-		    	
-		    }
+
+			}
 		});
-		
-		
-		movebed.add(award);        movebed.add(award_text);
-		movebed.add(rward);        movebed.add(rward_text);
-		movebed.add(broom);        movebed.add(broom_text);
-		
-		movebed.add(award2);        movebed.add(award2_text);
-		movebed.add(rward2);        movebed.add(rward2_text);
-		movebed.add(broom2);        movebed.add(broom2_text);
-		movebed.add(sid);        movebed.add(sid_text);
-		movebed.add(day);        movebed.add(day_text);
-		movebed.add(time);        movebed.add(time_text);
+
+		movebed.add(award);
+		movebed.add(award_text);
+		movebed.add(rward);
+		movebed.add(rward_text);
+		movebed.add(broom);
+		movebed.add(broom_text);
+
+		movebed.add(award2);
+		movebed.add(award2_text);
+		movebed.add(rward2);
+		movebed.add(rward2_text);
+		movebed.add(broom2);
+		movebed.add(broom2_text);
+		movebed.add(sid);
+		movebed.add(sid_text);
+		movebed.add(day);
+		movebed.add(day_text);
+		movebed.add(time);
+		movebed.add(time_text);
 		movebed.add(OK_butt);
-		movebed.setLayout(null);  
+		movebed.setLayout(null);
 		movebed.setVisible(true);
-		
-		
+
 	}
 
 	public void addPrescription() {
 
 		JFrame addPreinfo = new JFrame("addPrescription");
 		addPreinfo.setBounds(450, 50, 500, 650);
-		addPreinfo.setTitle("AddPrescription");         
-       
-        JLabel award=new JLabel("Ward ID:");
-        award.setBounds(20, 30, 130, 30);
-        JTextField award_text = new JTextField ();
-        award_text.setBounds(170, 30, 270, 30);
-        
-        JLabel rward=new JLabel("Room Number:");
-        rward.setBounds(20, 90, 130, 30);
-        JTextField rward_text = new JTextField ();
-        rward_text.setBounds(170, 90, 270, 30);
+		addPreinfo.setTitle("AddPrescription");
 
-        JLabel broom=new JLabel("Bed Number:");
-        broom.setBounds(20, 150, 130, 30);
-        JTextField broom_text = new JTextField ();
-        broom_text.setBounds(170, 150, 270, 30);   
-        
-        JLabel medicine =new JLabel("Medicine:");
-        medicine.setBounds(20, 210, 130, 30);
-        JTextField medicine_text = new JTextField ();
-        medicine_text.setBounds(170, 210, 270, 30);   
-        
-        
-        JLabel time =new JLabel("Time:");
-        time.setBounds(20, 270, 130, 30);
-        JTextField time_text = new JTextField ();
-        time_text.setBounds(170, 270, 270, 30);  
-        
-        JLabel dose =new JLabel("Dose:");
-        dose.setBounds(20, 330, 130, 30);
-        JTextField dose_text = new JTextField ();
-        dose_text.setBounds(170, 330, 270, 30);  
-        
-        
-        JLabel sid =new JLabel("Staff-ID:");
-        sid.setBounds(20, 390, 130, 30);
-        JTextField sid_text = new JTextField ();
-        sid_text.setBounds(170, 390, 270, 30);  
-        
-        JButton OK_butt = new JButton("OK");
+		JLabel award = new JLabel("Ward ID:");
+		award.setBounds(20, 30, 130, 30);
+		JTextField award_text = new JTextField();
+		award_text.setBounds(170, 30, 270, 30);
+
+		JLabel rward = new JLabel("Room Number:");
+		rward.setBounds(20, 90, 130, 30);
+		JTextField rward_text = new JTextField();
+		rward_text.setBounds(170, 90, 270, 30);
+
+		JLabel broom = new JLabel("Bed Number:");
+		broom.setBounds(20, 150, 130, 30);
+		JTextField broom_text = new JTextField();
+		broom_text.setBounds(170, 150, 270, 30);
+
+		JLabel medicine = new JLabel("Medicine:");
+		medicine.setBounds(20, 210, 130, 30);
+		JTextField medicine_text = new JTextField();
+		medicine_text.setBounds(170, 210, 270, 30);
+
+		JLabel time = new JLabel("Time:");
+		time.setBounds(20, 270, 130, 30);
+		JTextField time_text = new JTextField();
+		time_text.setBounds(170, 270, 270, 30);
+
+		JLabel dose = new JLabel("Dose:");
+		dose.setBounds(20, 330, 130, 30);
+		JTextField dose_text = new JTextField();
+		dose_text.setBounds(170, 330, 270, 30);
+
+		JLabel sid = new JLabel("Staff-ID:");
+		sid.setBounds(20, 390, 130, 30);
+		JTextField sid_text = new JTextField();
+		sid_text.setBounds(170, 390, 270, 30);
+
+		JButton OK_butt = new JButton("OK");
 		OK_butt.setBounds(150, 500, 200, 40);
-		OK_butt.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent e) {
-		    	
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		    	availableBeds();
+				availableBeds();
 				int w, r, b;
-				w = Integer.parseInt(award_text.getText());
-				r = Integer.parseInt(rward_text.getText());
-				b = Integer.parseInt(broom_text.getText());
+				try {
+					w = Integer.parseInt(award_text.getText());
+					r = Integer.parseInt(rward_text.getText());
+					b = Integer.parseInt(broom_text.getText());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(addPreinfo, "Please Enter all the values", "ERROR", 1);
+					return;
+				}
+				if (w > ward.length || w < 1) {
+					JOptionPane.showMessageDialog(addPreinfo, "Ward Number Should be Between 1-" + ward.length, "ERROR",
+							1);
+					return;
+				}
+				if (r > ward[w - 1].getRoom().length || r < 1) {
+					JOptionPane.showMessageDialog(addPreinfo,
+							"Room Number Should be Between 1-" + ward[w - 1].getRoom().length, "ERROR", 1);
+					return;
+				}
+				if (b > ward[w - 1].getRoom(r - 1).getBed().length || b < 1) {
+					JOptionPane.showMessageDialog(addPreinfo,
+							"Bed Number Should be Between 1-" + ward[w - 1].getRoom(r - 1).getBed().length, "ERROR", 1);
+					return;
+				}
 				if (ward[w - 1].getRoom(r - 1).getBed(b - 1).isVacant()) {
 					JOptionPane.showMessageDialog(null, "No Resident assigned to this Bed", "ERROR", 1);
-					
+
 				} else {
-					
+
 					Prescription tmp = new Prescription();
 					sc.nextLine();
-				
+
 					tmp.setMedicine(medicine_text.getText());
-		
+
 					tmp.setTime(time_text.getText());
-		
+
 					tmp.setDose(dose_text.getText());
 
 					tmp.setStaffID(Integer.parseInt(sid_text.getText()));
 					ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned().getPrescription().add(tmp);
-					
+
+					JOptionPane.showMessageDialog(null,
+							" done " + ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned().getPatientID(), "",
+							1);
+
+					List<Prescription> prescription = ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned()
+							.getPrescription();
+
+					String temp2 = "";
+					for (int i = 0; i < prescription.size(); i++) {
+						tmp = prescription.get(i);
+						temp2 += "Medicine:" + tmp.getMedicine() + "\tTime:" + tmp.getTime() + "\tDose:" + tmp.getDose()
+								+ "\tStaff-ID:" + tmp.getStaffID() + "\n";
+
+					}
+
 				}
-		    	
-		    }
+			}
 		});
-		
-		
-		addPreinfo.add(award);        addPreinfo.add(award_text);
-		addPreinfo.add(rward);        addPreinfo.add(rward_text);
-		addPreinfo.add(broom);        addPreinfo.add(broom_text);
-		addPreinfo.add(medicine);        addPreinfo.add(medicine_text);
-		addPreinfo.add(time);        addPreinfo.add(time_text);
-		addPreinfo.add(dose);        addPreinfo.add(dose_text);
-		addPreinfo.add(sid);        addPreinfo.add(sid_text);
+
+		addPreinfo.add(award);
+		addPreinfo.add(award_text);
+		addPreinfo.add(rward);
+		addPreinfo.add(rward_text);
+		addPreinfo.add(broom);
+		addPreinfo.add(broom_text);
+		addPreinfo.add(medicine);
+		addPreinfo.add(medicine_text);
+		addPreinfo.add(time);
+		addPreinfo.add(time_text);
+		addPreinfo.add(dose);
+		addPreinfo.add(dose_text);
+		addPreinfo.add(sid);
+		addPreinfo.add(sid_text);
 		addPreinfo.add(OK_butt);
-		addPreinfo.setLayout(null);  
+		addPreinfo.setLayout(null);
 		addPreinfo.setVisible(true);
-		
+
 	}
 
 //This function is display all details of patient, resident of bed
 	public void residentDetails() {
-		
+
 		JFrame resinfo = new JFrame("residentDetails");
 		resinfo.setBounds(450, 250, 500, 320);
-		resinfo.setTitle("ResidentDetails");         
-       
-        JLabel award=new JLabel("Ward ID:");
-        award.setBounds(20, 30, 130, 30);
-        JTextField award_text = new JTextField ();
-        award_text.setBounds(170, 30, 270, 30);
-        
-        JLabel rward=new JLabel("Room Number:");
-        rward.setBounds(20, 90, 130, 30);
-        JTextField rward_text = new JTextField ();
-        rward_text.setBounds(170, 90, 270, 30);
+		resinfo.setTitle("ResidentDetails");
 
-        JLabel broom=new JLabel("Bed Number:");
-        broom.setBounds(20, 150, 130, 30);
-        JTextField broom_text = new JTextField ();
-        broom_text.setBounds(170, 150, 270, 30);   
-        
-        
-        JButton OK_butt = new JButton("OK");
+		JLabel award = new JLabel("Ward ID:");
+		award.setBounds(20, 30, 130, 30);
+		JTextField award_text = new JTextField();
+		award_text.setBounds(170, 30, 270, 30);
+
+		JLabel rward = new JLabel("Room Number:");
+		rward.setBounds(20, 90, 130, 30);
+		JTextField rward_text = new JTextField();
+		rward_text.setBounds(170, 90, 270, 30);
+
+		JLabel broom = new JLabel("Bed Number:");
+		broom.setBounds(20, 150, 130, 30);
+		JTextField broom_text = new JTextField();
+		broom_text.setBounds(170, 150, 270, 30);
+
+		JButton OK_butt = new JButton("OK");
 		OK_butt.setBounds(150, 230, 200, 40);
-		OK_butt.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent e) {
-		    	
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		    	availableBeds();
+				availableBeds();
 				int w, r, b;
-				w = Integer.parseInt(award_text.getText());
-				r = Integer.parseInt(rward_text.getText());
-				b = Integer.parseInt(broom_text.getText());
+				try {
+					w = Integer.parseInt(award_text.getText());
+					r = Integer.parseInt(rward_text.getText());
+					b = Integer.parseInt(broom_text.getText());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(resinfo, "Please Enter All the values", "ERROR", 1);
+					return;
+				}
+				if (w > ward.length || w < 1) {
+					JOptionPane.showMessageDialog(resinfo, "Ward Number Should be Between 1-" + ward.length, "ERROR",
+							1);
+					return;
+				}
+				if (r > ward[w - 1].getRoom().length || r < 1) {
+					JOptionPane.showMessageDialog(resinfo,
+							"Room Number Should be Between 1-" + ward[w - 1].getRoom().length, "ERROR", 1);
+					return;
+				}
+				if (b > ward[w - 1].getRoom(r - 1).getBed().length || b < 1) {
+					JOptionPane.showMessageDialog(resinfo,
+							"Bed Number Should be Between 1-" + ward[w - 1].getRoom(r - 1).getBed().length, "ERROR", 1);
+					return;
+				}
+
+				if (w > ward.length || w < 1) {
+					JOptionPane.showMessageDialog(resinfo, "Ward Number Should be Between 1-" + ward.length, "ERROR",
+							1);
+					return;
+				}
+				if (r > ward[w - 1].getRoom().length || r < 1) {
+					JOptionPane.showMessageDialog(resinfo,
+							"Room Number Should be Between 1-" + ward[w - 1].getRoom().length, "ERROR", 1);
+					return;
+				}
+				if (b > ward[w - 1].getRoom(r - 1).getBed().length || b < 1) {
+					JOptionPane.showMessageDialog(resinfo,
+							"Bed Number Should be Between 1-" + ward[w - 1].getRoom(r - 1).getBed().length, "ERROR", 1);
+					return;
+				}
 				if (ward[w - 1].getRoom(r - 1).getBed(b - 1).isVacant()) {
 					JOptionPane.showMessageDialog(null, "No Resident assigned to this Bed", "ERROR", 1);
-					
+
 				} else {
-					JOptionPane.showMessageDialog(null, " Patient ID is: " + ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned().getPatientID(),"" , 1);
+					JOptionPane.showMessageDialog(null,
+							" Patient ID is: "
+									+ ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned().getPatientID(),
+							"", 1);
 					List<Prescription> prescription = ward[w - 1].getRoom(r - 1).getBed(b - 1).getPatientAssigned()
 							.getPrescription();
 					Prescription tmp;
 					String temp2 = "";
 					for (int i = 0; i < prescription.size(); i++) {
 						tmp = prescription.get(i);
-						temp2 += "Medicine:" + tmp.getMedicine() + "\tTime:" + tmp.getTime() + "\tDose:"
-								+ tmp.getDose() + "\tStaff-ID:" + tmp.getStaffID() + "\n";
+						temp2 += "Medicine:" + tmp.getMedicine() + "\tTime:" + tmp.getTime() + "\tDose:" + tmp.getDose()
+								+ "\tStaff-ID:" + tmp.getStaffID() + "\n";
+
 					}
-					JOptionPane.showMessageDialog(null, temp2,"" , 1);
-			
+
 				}
-		    	
-		    }
+
+			}
 		});
-		
-		
-		resinfo.add(award);        resinfo.add(award_text);
-		resinfo.add(rward);        resinfo.add(rward_text);
-		resinfo.add(broom);        resinfo.add(broom_text);
-		
+
+		resinfo.add(award);
+		resinfo.add(award_text);
+		resinfo.add(rward);
+		resinfo.add(rward_text);
+		resinfo.add(broom);
+		resinfo.add(broom_text);
+
 		resinfo.add(OK_butt);
-		resinfo.setLayout(null);  
+		resinfo.setLayout(null);
 		resinfo.setVisible(true);
-        
-		
-		
+
 	}
 
 	public void addResidentToBed() {
-	
+
 		JFrame patientinfo = new JFrame("addResidentToBed");
 		patientinfo.setBounds(450, 50, 500, 700);
-		patientinfo.setTitle("AddResidentToBed");         
+		patientinfo.setTitle("AddResidentToBed");
+
 //        
-        JLabel id=new JLabel(" Patient ID:");
-        id.setBounds(20, 30, 130, 30);
-        JTextField id_text = new JTextField ();
-        id_text.setBounds(170, 30, 270, 30);
-        
-        JTextField result_text = new JTextField();
-        result_text.setBounds(50,150,400,100);
-        
-        JLabel award=new JLabel("Ward ID:");
-        award.setBounds(20, 270, 130, 30);
-        JTextField award_text = new JTextField ();
-        award_text.setBounds(170, 270, 270, 30);
-        
-        JLabel rward=new JLabel("Room Number:");
-        rward.setBounds(20, 330, 130, 30);
-        JTextField rward_text = new JTextField ();
-        rward_text.setBounds(170, 330, 270, 30);
+		JLabel id = new JLabel(" Patient ID:");
+		id.setBounds(20, 30, 130, 30);
+		JTextField id_text = new JTextField();
+		id_text.setBounds(170, 30, 270, 30);
 
-        JLabel broom=new JLabel("Bed Number:");
-        broom.setBounds(20, 390, 130, 30);
-        JTextField broom_text = new JTextField ();
-        broom_text.setBounds(170, 390, 270, 30);   
-        
-        JButton Search_butt = new JButton("Search");
+		JTextField result_text = new JTextField();
+		result_text.setBounds(50, 150, 400, 100);
+
+		JLabel award = new JLabel("Ward ID:");
+		award.setBounds(20, 270, 130, 30);
+		JTextField award_text = new JTextField();
+		award_text.setBounds(170, 270, 270, 30);
+
+		JLabel rward = new JLabel("Room Number:");
+		rward.setBounds(20, 330, 130, 30);
+		JTextField rward_text = new JTextField();
+		rward_text.setBounds(170, 330, 270, 30);
+
+		JLabel broom = new JLabel("Bed Number:");
+		broom.setBounds(20, 390, 130, 30);
+		JTextField broom_text = new JTextField();
+		broom_text.setBounds(170, 390, 270, 30);
+
+		JButton Search_butt = new JButton("Search");
 		Search_butt.setBounds(150, 90, 200, 40);
-		Search_butt.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent e) {
-		    	Patient p = new Patient();
-				p.setPatientID(sc.nextInt());
-				result_text.setText(availableBeds());
-				
-		    }
-		});
-		
-		JLabel sid=new JLabel("Stuff-ID:");
-        sid.setBounds(20, 450, 130, 30);
-        JTextField sid_text = new JTextField ();
-        sid_text.setBounds(170, 450, 270, 30);
+		Search_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					result_text.setText("");
+					Patient patient = null;
+					for (Patient tmp : patientsData) {
+						if (Integer.parseInt(id_text.getText()) == tmp.getPatientID()) {
+							patient = tmp;
+							break;
+						}
+					}
+					if (patient != null) {
+						result_text.setText("Patient Info :\n" + patient);
 
-        
-		JLabel day=new JLabel("Day:");
-        day.setBounds(20, 500, 130, 30);
-        JTextField day_text = new JTextField ();
-        day_text.setBounds(170, 500, 270, 30);
-        
-        JLabel time=new JLabel("Time:");
-        time.setBounds(20, 550, 130, 30);
-        JTextField time_text = new JTextField ();
-        time_text.setBounds(170, 550, 270, 30);
-		
-        JButton OK_butt = new JButton("OK");
+					} else {
+						result_text.setText("No Patient Found for ID :" + id_text.getText());
+
+					}
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(patientinfo, "Please Enter Valid Data", "ERROR", 1);
+				}
+			}
+
+		});
+
+		JLabel sid = new JLabel("Stuff-ID:");
+		sid.setBounds(20, 450, 130, 30);
+		JTextField sid_text = new JTextField();
+		sid_text.setBounds(170, 450, 270, 30);
+
+		JLabel day = new JLabel("Day:");
+		day.setBounds(20, 500, 130, 30);
+		JTextField day_text = new JTextField();
+		day_text.setBounds(170, 500, 270, 30);
+
+		JLabel time = new JLabel("Time:");
+		time.setBounds(20, 550, 130, 30);
+		JTextField time_text = new JTextField();
+		time_text.setBounds(170, 550, 270, 30);
+
+		JButton OK_butt = new JButton("OK");
 		OK_butt.setBounds(150, 610, 200, 40);
-		OK_butt.addActionListener(new ActionListener(){
-		    public void actionPerformed(ActionEvent e) {
-		    	Patient p = new Patient();
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Patient p = new Patient();
 				int w, r, b;
-				w = Integer.parseInt(award_text.getText());
-				r = Integer.parseInt(rward_text.getText());
-				b = Integer.parseInt(broom_text.getText());
+				try {
+					w = Integer.parseInt(award_text.getText());
+					r = Integer.parseInt(rward_text.getText());
+					b = Integer.parseInt(broom_text.getText());
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(patientinfo, "Please enter all the values", "ERROR", 1);
+					return;
+				}
+				if (w > ward.length || w < 1) {
+					JOptionPane.showMessageDialog(patientinfo, "Ward Number Should be Between 1-" + ward.length,
+							"ERROR", 1);
+					return;
+				}
+				if (r > ward[w - 1].getRoom().length || r < 1) {
+					JOptionPane.showMessageDialog(patientinfo,
+							"Room Number Should be Between 1-" + ward[w - 1].getRoom().length, "ERROR", 1);
+					return;
+				}
+				if (b > ward[w - 1].getRoom(r - 1).getBed().length || b < 1) {
+					JOptionPane.showMessageDialog(patientinfo,
+							"Bed Number Should be Between 1-" + ward[w - 1].getRoom(r - 1).getBed().length, "ERROR", 1);
+					return;
+				}
 				if (ward[w - 1].getRoom(r - 1).getBed(b - 1).isVacant()) {
 					ward[w - 1].getRoom(r - 1).getBed(b - 1).setPatientAssigned(p);
 					ward[w - 1].getRoom(r - 1).getBed(b - 1).setVacant(false);
-					
+
 					ActionLog tempLog = new ActionLog();
-					
+
 					tempLog.setStaffID(Integer.parseInt(sid_text.getText()));
 					tempLog.setDay(day_text.getText());
 					tempLog.setTime(time_text.getText());
@@ -667,22 +834,29 @@ public class CareHome implements Serializable {
 				} else {
 					JOptionPane.showMessageDialog(null, "Sorry! Bed is already occupied", "ERROR", 1);
 				}
-		    }
+			}
 		});
-		
-		patientinfo.add(id);        patientinfo.add(id_text);
+
+		patientinfo.add(id);
+		patientinfo.add(id_text);
 		patientinfo.add(Search_butt);
 		patientinfo.add(result_text);
-		patientinfo.add(award);        patientinfo.add(award_text);
-		patientinfo.add(rward);        patientinfo.add(rward_text);
-		patientinfo.add(broom);        patientinfo.add(broom_text);
-		patientinfo.add(sid);        patientinfo.add(sid_text);
-		patientinfo.add(day);        patientinfo.add(day_text);
-		patientinfo.add(time);        patientinfo.add(time_text);
+		patientinfo.add(award);
+		patientinfo.add(award_text);
+		patientinfo.add(rward);
+		patientinfo.add(rward_text);
+		patientinfo.add(broom);
+		patientinfo.add(broom_text);
+		patientinfo.add(sid);
+		patientinfo.add(sid_text);
+		patientinfo.add(day);
+		patientinfo.add(day_text);
+		patientinfo.add(time);
+		patientinfo.add(time_text);
 		patientinfo.add(OK_butt);
-        patientinfo.setLayout(null);  
-        patientinfo.setVisible(true);
-		
+		patientinfo.setLayout(null);
+		patientinfo.setVisible(true);
+
 	}
 
 	public String availableBeds() {
@@ -694,7 +868,7 @@ public class CareHome implements Serializable {
 				temp += "--Room: " + ward[w].getRoom(r).getRoomID() + "\n";
 				numBeds = ward[w].getRoom(r).getNumBeds();
 				for (int b = 0; b < numBeds; b++) {
-					temp +="----Bed: " + ward[w].getRoom(r).getBed(b).getBedID() +"\t";
+					temp += "----Bed: " + ward[w].getRoom(r).getBed(b).getBedID() + "\t";
 					if (ward[w].getRoom(r).getBed(b).isVacant()) {
 						temp += "------Available\n";
 					} else {
@@ -707,151 +881,145 @@ public class CareHome implements Serializable {
 		return temp;
 	}
 
-
 	public void addNurseInfo() {
 		JFrame nurseinfo = new JFrame("nurseinfo");
 		nurseinfo.setBounds(450, 100, 500, 630);
-		//nurseinfo.setDefaultCloseOperation(JFrame.NORMAL);
-		nurseinfo.setTitle("NurseInfo");         
-        
-        JLabel id=new JLabel("I D:");
-        id.setBounds(20, 30, 130, 30);
-        JTextField id_text = new JTextField ();
-        id_text.setBounds(170, 30, 270, 30);
-                    
-        JLabel name=new JLabel("Name:");
-        name.setBounds(20, 90, 130, 30);
-        JTextField name_text = new JTextField ();
-        name_text.setBounds(170, 90, 270, 30);
-        
-        JLabel status=new JLabel("Status:");
-        status.setBounds(20, 150, 130, 30);
-        JTextField status_text = new JTextField ("Available or Not Available");
-        status_text.setBounds(170, 150, 270, 30);
-        
-        JLabel stime=new JLabel("Start Time:");
-        stime.setBounds(20, 210, 130, 30);
-        JTextField stime_text = new JTextField ("8am-4pm");
-        stime_text.setBounds(170, 210, 270, 30);
-        
-        JLabel etime=new JLabel("End Time:");
-        etime.setBounds(20, 270, 130, 30);
-        JTextField etime_text = new JTextField ("2pm-10pm");
-        etime_text.setBounds(170, 270, 270, 30);
-        
-        JLabel award=new JLabel("Assignment in Ward:");
-        award.setBounds(20, 330, 130, 30);
-        JTextField award_text = new JTextField ("1 for Ward1, 2 for Ward2");
-        award_text.setBounds(170, 330, 270, 30);
-        
-        JLabel rward=new JLabel("Room in Ward:");
-        rward.setBounds(20, 390, 130, 30);
-        JTextField rward_text = new JTextField ("1-6");
-        rward_text.setBounds(170, 390, 270, 30);
+		// nurseinfo.setDefaultCloseOperation(JFrame.NORMAL);
+		nurseinfo.setTitle("NurseInfo");
 
-        JLabel broom=new JLabel("Bed in Room:");
-        broom.setBounds(20, 450, 130, 30);
-        JTextField broom_text = new JTextField ("1, 2, 3-6");
-        broom_text.setBounds(170, 450, 270, 30);   
-     
-        JButton OK_butt = new JButton("Save");
-        OK_butt.setBounds(200, 530, 100, 40);
-        OK_butt.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-            	Location locTemp = new Location();
-        		Nurse temp = new Nurse();
-        		 try
-    		    {
-    			 	temp.setId(Integer.parseInt(id_text.getText()));	        
-    		    } catch (NumberFormatException ex)
-    		    {
-    		    	JOptionPane.showMessageDialog(null, "Please enter ID as an integer", "ERROR", 1);
-    		    	return;
-    		    }
-        		
-        		temp.setName(name_text.getText());
-        		temp.setStatus(status_text.getText());
-        		
-        		try
-     		    {
-        			 temp.setShiftStart(Integer.parseInt(stime_text.getText()));       
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Start Time as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		 
-        		try
-     		    {
-        			temp.setShiftEnd(Integer.parseInt(etime_text.getText()));      
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter End Time as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		
-        		
-        		if (!checkCompliance(temp.getShiftStart(), temp.getShiftEnd()))
-        			return;
-        		if (temp.getShiftStart() == 8)
-        			temp.setShiftTiming("" + temp.getShiftStart() + "am to " + temp.getShiftEnd() + "pm");
-        		else {
-        			temp.setShiftTiming("" + temp.getShiftStart() + "pm to " + temp.getShiftEnd() + "pm");
-        		}
-        		
-        		try
-     		    {
-        			locTemp.setWard(Integer.parseInt(award_text.getText()));
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Assignment in Ward as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		
-        		try
-     		    {
-        			locTemp.setRoom(Integer.parseInt(rward_text.getText()));
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Room in Ward as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		 
-        		try
-     		    {
-        			locTemp.setBed(Integer.parseInt(broom_text.getText()));
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Bed in Room as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		
-        		temp.setLocationAssignedTo(locTemp);
-        		if (temp.getStatus().equals("Available")) {
-        			availableStaff.setAvailableNurse(temp);
-        		}
-        		nursesData.add(temp);
-        		
-        		JOptionPane.showMessageDialog(null, "Following Details are Added in the Record", "SUCCESS", 1);
-        		displayNurseData(temp);
-        		JOptionPane.showMessageDialog(null, displayNurseData(temp), "DisplayNurseData", 1);
-        		nurseinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);            	
-            }
-        });
-        
-        nurseinfo.add(id);        nurseinfo.add(id_text);
-        nurseinfo.add(name);        nurseinfo.add(name_text);
-        nurseinfo.add(status);        nurseinfo.add(status_text);
-        nurseinfo.add(stime);        nurseinfo.add(stime_text);
-        nurseinfo.add(etime);        nurseinfo.add(etime_text);
-        nurseinfo.add(award);        nurseinfo.add(award_text);
-        nurseinfo.add(rward);        nurseinfo.add(rward_text);
-        nurseinfo.add(broom);        nurseinfo.add(broom_text);
-        nurseinfo.add(OK_butt);
-      
-        nurseinfo.setLayout(null);  
-        nurseinfo.setVisible(true);
-	
+		JLabel id = new JLabel("I D:");
+		id.setBounds(20, 30, 130, 30);
+		JTextField id_text = new JTextField();
+		id_text.setBounds(170, 30, 270, 30);
+
+		JLabel name = new JLabel("Name:");
+		name.setBounds(20, 90, 130, 30);
+		JTextField name_text = new JTextField();
+		name_text.setBounds(170, 90, 270, 30);
+
+		JLabel status = new JLabel("Status:");
+		status.setBounds(20, 150, 130, 30);
+		JTextField status_text = new JTextField("Available or Not Available");
+		status_text.setBounds(170, 150, 270, 30);
+
+		JLabel stime = new JLabel("Start Time:");
+		stime.setBounds(20, 210, 130, 30);
+		JTextField stime_text = new JTextField("8am or 2pm");
+		stime_text.setBounds(170, 210, 270, 30);
+
+		JLabel etime = new JLabel("End Time:");
+		etime.setBounds(20, 270, 130, 30);
+		JTextField etime_text = new JTextField("4pm or 10pm");
+		etime_text.setBounds(170, 270, 270, 30);
+
+		JLabel award = new JLabel("Assignment in Ward:");
+		award.setBounds(20, 330, 130, 30);
+		JTextField award_text = new JTextField("1 for Ward1, 2 for Ward2");
+		award_text.setBounds(170, 330, 270, 30);
+
+		JLabel rward = new JLabel("Room in Ward:");
+		rward.setBounds(20, 390, 130, 30);
+		JTextField rward_text = new JTextField("1-6");
+		rward_text.setBounds(170, 390, 270, 30);
+
+		JLabel broom = new JLabel("Bed in Room:");
+		broom.setBounds(20, 450, 130, 30);
+		JTextField broom_text = new JTextField("1, 2, 3-6");
+		broom_text.setBounds(170, 450, 270, 30);
+
+		JButton OK_butt = new JButton("Save");
+		OK_butt.setBounds(200, 530, 100, 40);
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Location locTemp = new Location();
+				Nurse temp = new Nurse();
+				try {
+					temp.setId(Integer.parseInt(id_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter ID as an integer", "ERROR", 1);
+					return;
+				}
+
+				temp.setName(name_text.getText());
+				temp.setStatus(status_text.getText());
+
+				try {
+					temp.setShiftStart(Integer.parseInt(stime_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Start Time as an integer", "ERROR", 1);
+					return;
+				}
+
+				try {
+					temp.setShiftEnd(Integer.parseInt(etime_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter End Time as an integer", "ERROR", 1);
+					return;
+				}
+
+				if (!checkCompliance(temp.getShiftStart(), temp.getShiftEnd()))
+					return;
+				if (temp.getShiftStart() == 8)
+					temp.setShiftTiming("" + temp.getShiftStart() + "am to " + temp.getShiftEnd() + "pm");
+				else {
+					temp.setShiftTiming("" + temp.getShiftStart() + "pm to " + temp.getShiftEnd() + "pm");
+				}
+
+				try {
+					locTemp.setWard(Integer.parseInt(award_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Assignment in Ward as an integer", "ERROR", 1);
+					return;
+				}
+
+				try {
+					locTemp.setRoom(Integer.parseInt(rward_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Room in Ward as an integer", "ERROR", 1);
+					return;
+				}
+
+				try {
+					locTemp.setBed(Integer.parseInt(broom_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Bed in Room as an integer", "ERROR", 1);
+					return;
+				}
+
+				temp.setLocationAssignedTo(locTemp);
+				if (temp.getStatus().equals("Available")) {
+					availableStaff.setAvailableNurse(temp);
+				}
+				nursesData.add(temp);
+
+				JOptionPane.showMessageDialog(null, "Following Details are Added in the Record", "SUCCESS", 1);
+				displayNurseData(temp);
+				JOptionPane.showMessageDialog(null, displayNurseData(temp), "DisplayNurseData", 1);
+				nurseinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+
+		nurseinfo.add(id);
+		nurseinfo.add(id_text);
+		nurseinfo.add(name);
+		nurseinfo.add(name_text);
+		nurseinfo.add(status);
+		nurseinfo.add(status_text);
+		nurseinfo.add(stime);
+		nurseinfo.add(stime_text);
+		nurseinfo.add(etime);
+		nurseinfo.add(etime_text);
+		nurseinfo.add(award);
+		nurseinfo.add(award_text);
+		nurseinfo.add(rward);
+		nurseinfo.add(rward_text);
+		nurseinfo.add(broom);
+		nurseinfo.add(broom_text);
+		nurseinfo.add(OK_butt);
+
+		nurseinfo.setLayout(null);
+		nurseinfo.setVisible(true);
+
 	}
 
 	public boolean checkCompliance(int shiftStart, int shiftEnd) {
@@ -859,170 +1027,166 @@ public class CareHome implements Serializable {
 			if (shiftEnd == 4) {
 				return true;
 			} else {
-				JOptionPane.showMessageDialog(null, "Wrong Shift End Time, Enter Again!", "ERROR", 1);				
+				JOptionPane.showMessageDialog(null, "Wrong Shift End Time, Enter Again!", "ERROR", 1);
 				return false;
 			}
 		} else if (shiftStart == 2) {
 			if (shiftEnd == 10) {
 				return true;
 			} else {
-				JOptionPane.showMessageDialog(null, "Wrong Shift End Time, Enter Again!", "ERROR", 1);		
+				JOptionPane.showMessageDialog(null, "Wrong Shift End Time, Enter Again!", "ERROR", 1);
 				return false;
 			}
 		}
-		JOptionPane.showMessageDialog(null, "Wrong Shift Start Time, Enter Again!", "ERROR", 1);		
+		JOptionPane.showMessageDialog(null, "Wrong Shift Start Time, Enter Again!", "ERROR", 1);
 		return false;
 	}
 
-	
 	public String displayNurseData(Nurse temp) {
-		String temp2 = "ID: " + temp.getId() + "\nName: " + temp.getName() + "\nShift Time: "
-				+ temp.getShiftTiming() + "\nStatus: " + temp.getStatus() + "\nLocation Assigned To, \nWard: "
+		String temp2 = "ID: " + temp.getId() + "\nName: " + temp.getName() + "\nShift Time: " + temp.getShiftTiming()
+				+ "\nStatus: " + temp.getStatus() + "\nLocation Assigned To, \nWard: "
 				+ temp.getLocationAssignedTo().getWard() + "\nRoom: " + temp.getLocationAssignedTo().getRoom();
-		
-		//JOptionPane.showMessageDialog(null, temp2, "DisplayNurseData", 1);
-		return temp2;
-		
-	}
 
+		// JOptionPane.showMessageDialog(null, temp2, "DisplayNurseData", 1);
+		return temp2;
+
+	}
 
 	public void addDoctorInfo() {
 		JFrame doctorinfo = new JFrame("doctorinfo");
 		doctorinfo.setBounds(450, 100, 500, 600);
-		doctorinfo.setTitle("DoctorInfo");         
-        
-        JLabel id=new JLabel("I D:");
-        id.setBounds(20, 30, 130, 30);
-        JTextField id_text = new JTextField ();
-        id_text.setBounds(170, 30, 270, 30);
-                    
-        JLabel name=new JLabel("Name:");
-        name.setBounds(20, 90, 130, 30);
-        JTextField name_text = new JTextField ();
-        name_text.setBounds(170, 90, 270, 30);
-        
-        JLabel status=new JLabel("Status:");
-        status.setBounds(20, 150, 130, 30);
-        JTextField status_text = new JTextField ("Available or Not Available");
-        status_text.setBounds(170, 150, 270, 30);
-        
-        JLabel stime=new JLabel("Start Time:");
-        stime.setBounds(20, 210, 130, 30);
-        JTextField stime_text = new JTextField ("8am-4pm");
-        stime_text.setBounds(170, 210, 270, 30);
-        
-        JLabel award=new JLabel("Assignment in Ward:");
-        award.setBounds(20, 270, 130, 30);
-        JTextField award_text = new JTextField ("1 for Ward1, 2 for Ward2");
-        award_text.setBounds(170, 270, 270, 30);
-        
-        JLabel rward=new JLabel("Room in Ward:");
-        rward.setBounds(20, 330, 130, 30);
-        JTextField rward_text = new JTextField ("1-6");
-        rward_text.setBounds(170, 330, 270, 30);
+		doctorinfo.setTitle("DoctorInfo");
 
-        JLabel broom=new JLabel("Bed in Room:");
-        broom.setBounds(20, 390, 130, 30);
-        JTextField broom_text = new JTextField ("1, 2, 3-6");
-        broom_text.setBounds(170, 390, 270, 30);   
-     
-        JButton OK_butt = new JButton("Save");
-        OK_butt.setBounds(200, 500, 100, 40);
-        OK_butt.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-            	Location locTemp = new Location();
-        		Doctor temp = new Doctor();
-        		 try
-    		    {
-    			 	temp.setId(Integer.parseInt(id_text.getText()));	        
-    		    } catch (NumberFormatException ex)
-    		    {
-    		    	JOptionPane.showMessageDialog(null, "Please enter ID as an integer", "ERROR", 1);
-    		    	return;
-    		    }
-        		
-        		temp.setName(name_text.getText());
-        		temp.setStatus(status_text.getText());
-        		temp.setShiftTiming(stime_text.getText());       
-     		     
-        		
-        		try
-     		    {
-        			locTemp.setWard(Integer.parseInt(award_text.getText()));
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Assignment in Ward as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		
-        		try
-     		    {
-        			locTemp.setRoom(Integer.parseInt(rward_text.getText()));
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Room in Ward as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		 
-        		try
-     		    {
-        			locTemp.setBed(Integer.parseInt(broom_text.getText()));
-     		    } catch (NumberFormatException ex)
-     		    {
-     		    	JOptionPane.showMessageDialog(null, "Please enter Bed in Room as an integer", "ERROR", 1);
-     		    	return;
-     		    }
-        		
-        		temp.setLocationAssignedTo(locTemp);
-        		if (temp.getStatus().equals("Available")) {
-        			availableStaff.setAvailableDoctor(temp);
-        		}
-        		doctorsData.add(temp);
-        		
-        		JOptionPane.showMessageDialog(null, "Following Details are Added in the Record", "SUCCESS", 1);
-        		
-        		JOptionPane.showMessageDialog(null, displayDoctorData(temp), "DisplayDoctorData", 1);
-        		doctorinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);            	
-            }
-        });
-        
-        doctorinfo.add(id);        doctorinfo.add(id_text);
-        doctorinfo.add(name);        doctorinfo.add(name_text);
-        doctorinfo.add(status);        doctorinfo.add(status_text);
-        doctorinfo.add(stime);        doctorinfo.add(stime_text);
-        
-        doctorinfo.add(award);        doctorinfo.add(award_text);
-        doctorinfo.add(rward);        doctorinfo.add(rward_text);
-        doctorinfo.add(broom);        doctorinfo.add(broom_text);
-        doctorinfo.add(OK_butt);
-      
-        doctorinfo.setLayout(null);  
-        doctorinfo.setVisible(true);
-		
+		JLabel id = new JLabel("I D:");
+		id.setBounds(20, 30, 130, 30);
+		JTextField id_text = new JTextField();
+		id_text.setBounds(170, 30, 270, 30);
+
+		JLabel name = new JLabel("Name:");
+		name.setBounds(20, 90, 130, 30);
+		JTextField name_text = new JTextField();
+		name_text.setBounds(170, 90, 270, 30);
+
+		JLabel status = new JLabel("Status:");
+		status.setBounds(20, 150, 130, 30);
+		JTextField status_text = new JTextField("Available or Not Available");
+		status_text.setBounds(170, 150, 270, 30);
+
+		JLabel stime = new JLabel("Start Time:");
+		stime.setBounds(20, 210, 130, 30);
+		JTextField stime_text = new JTextField("8am-4pm or 2pm-10pm");
+		stime_text.setBounds(170, 210, 270, 30);
+
+		JLabel award = new JLabel("Assignment in Ward:");
+		award.setBounds(20, 270, 130, 30);
+		JTextField award_text = new JTextField("1 for Ward1, 2 for Ward2");
+		award_text.setBounds(170, 270, 270, 30);
+
+		JLabel rward = new JLabel("Room in Ward:");
+		rward.setBounds(20, 330, 130, 30);
+		JTextField rward_text = new JTextField("1-6");
+		rward_text.setBounds(170, 330, 270, 30);
+
+		JLabel broom = new JLabel("Bed in Room:");
+		broom.setBounds(20, 390, 130, 30);
+		JTextField broom_text = new JTextField("1, 2, 3-6");
+		broom_text.setBounds(170, 390, 270, 30);
+
+		JButton OK_butt = new JButton("Save");
+		OK_butt.setBounds(200, 500, 100, 40);
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Location locTemp = new Location();
+				Doctor temp = new Doctor();
+				try {
+					temp.setId(Integer.parseInt(id_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter ID as an integer", "ERROR", 1);
+					return;
+				}
+
+				temp.setName(name_text.getText());
+				temp.setStatus(status_text.getText());
+				temp.setShiftTiming(stime_text.getText());
+
+				try {
+					locTemp.setWard(Integer.parseInt(award_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Assignment in Ward as an integer", "ERROR", 1);
+					return;
+				}
+
+				try {
+					locTemp.setRoom(Integer.parseInt(rward_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Room in Ward as an integer", "ERROR", 1);
+					return;
+				}
+
+				try {
+					locTemp.setBed(Integer.parseInt(broom_text.getText()));
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please enter Bed in Room as an integer", "ERROR", 1);
+					return;
+				}
+
+				temp.setLocationAssignedTo(locTemp);
+				if (temp.getStatus().equals("Available")) {
+					availableStaff.setAvailableDoctor(temp);
+				}
+				doctorsData.add(temp);
+
+				JOptionPane.showMessageDialog(null, "Following Details are Added in the Record", "SUCCESS", 1);
+
+				JOptionPane.showMessageDialog(null, displayDoctorData(temp), "DisplayDoctorData", 1);
+				doctorinfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+
+		doctorinfo.add(id);
+		doctorinfo.add(id_text);
+		doctorinfo.add(name);
+		doctorinfo.add(name_text);
+		doctorinfo.add(status);
+		doctorinfo.add(status_text);
+		doctorinfo.add(stime);
+		doctorinfo.add(stime_text);
+
+		doctorinfo.add(award);
+		doctorinfo.add(award_text);
+		doctorinfo.add(rward);
+		doctorinfo.add(rward_text);
+		doctorinfo.add(broom);
+		doctorinfo.add(broom_text);
+		doctorinfo.add(OK_butt);
+
+		doctorinfo.setLayout(null);
+		doctorinfo.setVisible(true);
+
 	}
+
 	public String displayDoctorData(Doctor temp) {
-		String temp2 = "ID: " + temp.getId() + "\nName: " + temp.getName()
-		+ "\nShift Start Time i.e. 1-Hour Shift: " + temp.getShiftTiming() + "\nStatus: " + temp.getStatus()
-		+ "\nLocation Assigned To, \nWard: " + temp.getLocationAssignedTo().getWard() + "\nRoom: "
-		+ temp.getLocationAssignedTo().getRoom() + "\n\n";
-		
-		//JOptionPane.showMessageDialog(null, temp2, "DisplayDoctorData", 1);
+		String temp2 = "ID: " + temp.getId() + "\nName: " + temp.getName() + "\nShift Start Time i.e. 1-Hour Shift: "
+				+ temp.getShiftTiming() + "\nStatus: " + temp.getStatus() + "\nLocation Assigned To, \nWard: "
+				+ temp.getLocationAssignedTo().getWard() + "\nRoom: " + temp.getLocationAssignedTo().getRoom() + "\n\n";
+
+		// JOptionPane.showMessageDialog(null, temp2, "DisplayDoctorData", 1);
 		return temp2;
 	}
 
 	public String availableMedicalStaff() {
-		
+
 		String temp = "";
 		System.out.println("\nAvailable Doctors are :");
-		temp += "Available Doctors are :\n"; 
+		temp += "Available Doctors are :\n";
 		for (Doctor doc : availableStaff.getAvailableDoctor()) {
-			temp += displayDoctorData(doc);
+			temp += displayDoctorData(doc) + " \n";
 		}
 
 		System.out.println("\nAvailable Nurses are :");
 		temp += "\nAvailable Nurses are :\n ";
 		for (Nurse doc : availableStaff.getAvailableNurse()) {
-			temp += displayNurseData(doc);
+			temp += displayNurseData(doc) + " \n";
 		}
 		return temp;
 	}
@@ -1093,7 +1257,7 @@ public class CareHome implements Serializable {
 //	         c.printStackTrace();
 		}
 
-		//careHomeObject.menuFunction();
+		// careHomeObject.menuFunction();
 
 		try {
 			FileOutputStream fileOut = new FileOutputStream(path + "\\carehome.ser");
@@ -1143,6 +1307,85 @@ public class CareHome implements Serializable {
 		} catch (IOException i) {
 			i.printStackTrace();
 		}
+	}
+
+	public void addPatientInfo() {
+
+		JFrame patientInfo = new JFrame("PatientInfo");
+		patientInfo.setBounds(450, 100, 500, 630);
+		// nurseinfo.setDefaultCloseOperation(JFrame.NORMAL);
+		patientInfo.setTitle("PatientInfo");
+
+		JLabel id = new JLabel("ID:");
+		id.setBounds(20, 30, 130, 30);
+		JTextField id_text = new JTextField();
+		id_text.setBounds(170, 30, 270, 30);
+
+		JLabel name = new JLabel("Patient Name:");
+		name.setBounds(20, 90, 130, 30);
+		JTextField name_text = new JTextField();
+		name_text.setBounds(170, 90, 270, 30);
+
+		JLabel age = new JLabel("Age:");
+		age.setBounds(20, 150, 130, 30);
+		JTextField age_text = new JTextField("Enter Age");
+		age_text.setBounds(170, 150, 270, 30);
+
+		JLabel gender = new JLabel("Gender:");
+		gender.setBounds(20, 210, 130, 30);
+		JTextField gender_text = new JTextField("M/F/O");
+		gender_text.setBounds(170, 210, 270, 30);
+
+		JButton OK_butt = new JButton("Save");
+		OK_butt.setBounds(200, 530, 100, 40);
+		OK_butt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				Patient temp = new Patient();
+				try {
+					temp.setPatientID(Integer.parseInt(id_text.getText()));
+					temp.setPatientName(name_text.getText());
+					temp.setAge(Integer.parseInt(age_text.getText()));
+					temp.setGender(gender_text.getText());
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Please Enter Valid Data", "ERROR", 1);
+					return;
+				}
+
+				patientsData.add(temp);
+
+				JOptionPane.showMessageDialog(null, "Patient Data Added", "SUCCESS", 1);
+				patientInfo.dispose();
+
+				patientInfo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			}
+		});
+
+		patientInfo.add(id);
+		patientInfo.add(id_text);
+		patientInfo.add(name);
+		patientInfo.add(name_text);
+		patientInfo.add(age);
+		patientInfo.add(age_text);
+		patientInfo.add(gender);
+		patientInfo.add(gender_text);
+
+		patientInfo.add(OK_butt);
+
+		patientInfo.setLayout(null);
+		patientInfo.setVisible(true);
+
+	}
+
+	public String allPatients() {
+
+		String temp = "";
+		System.out.println("\nAvailable Patients are:");
+		for (Patient pta : patientsData) {
+			temp += pta + " \n";
+		}
+
+		return temp;
 	}
 
 }
