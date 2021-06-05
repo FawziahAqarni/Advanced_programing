@@ -1,11 +1,13 @@
 package logs;
 
-
 import java.io.Serializable;
+
+
+
 
 public class ActionLog implements Serializable {
 	private static final long serialVersionUID = 1L;
-	int staffID;
+	int staffID; 
 	String day, time, actionPerformed;
 	
 	
@@ -65,3 +67,4 @@ public class ActionLog implements Serializable {
 	
 	
 }
+
