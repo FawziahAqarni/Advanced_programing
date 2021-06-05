@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import location.Location;
 
-/*
- * This class is created to store data for each Doctor entered by the user of the system.
- * */
 
 public class Doctor implements Serializable {
 	/**
