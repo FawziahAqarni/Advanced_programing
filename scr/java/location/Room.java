@@ -4,9 +4,17 @@ import java.io.Serializable;
 
 public class Room implements Serializable{
 	private static final long serialVersionUID = 1L;
-	Bed bed[];
-	int roomID;
-	int numBeds;
+	Bed bed[]; 
+	public Bed[] getBed() {
+		return bed;
+	}
+
+	public void setBed(Bed[] bed) {
+		this.bed = bed;
+	}
+
+	int roomID; 
+	int numBeds; 
 
 	/**
 	 * @param bed
